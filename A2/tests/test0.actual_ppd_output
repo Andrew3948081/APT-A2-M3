@@ -1,0 +1,4 @@
+Error: invalid arguments passed in.
+Correct arguments are:
+	./ppd <stockfile> <coinfile>
+Where <stockfile> and <coinfile> are two valid files in the expected format.

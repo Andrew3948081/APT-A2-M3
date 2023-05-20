@@ -1,0 +1,16 @@
+Main Menu:
+        1. Display Items
+        2. Purchase Items
+        3. Save and Exit
+Administrator-Only Menu:
+        4. Add Item
+        5. Remove Item
+        6. Display Coins
+        7. Reset Stock
+        8. Reset Coins
+        9. Abort Program
+
+Select your option (1-9): Enter the item id of the item to remove from the menu: Error: line entered was too long. Please try again.
+Error: invalid item id entered. Please try again.
+Enter the item id of the item to remove from the menu: Operation cancelled at the user's request.
+The task Remove Item failed to run successfully.
