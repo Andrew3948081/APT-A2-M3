@@ -87,11 +87,14 @@ bool checkInputExists(std::string input);
  * Check if the input is correct
 */
 bool checkValidInput(std::string ID);
-
 /**
  * Prompts the user and takes input
 */
-void purchaseItemMenu();
+void PurchaseItemMenu();
+/**
+ * Prompts the user and takes input
+*/
+void modifedPurchaseItemMenu();
 
 /**
  * Convert a Price object to a string description (e.g Price(3, 50) -> $3.50)
@@ -151,6 +154,14 @@ ItemPurchasedInfo purchasingItem(int amountLeftToPay);
  * Handles the rest of the logic for purchasing an item
 */
 void purchaseItem(std::string ID);
+/**
+ * Handles the bulk of logic for purchasing an item
+*/
+ItemPurchasedInfo modifiedPurchasingItem(int amountLeftToPay);
+/**
+ * Handles the rest of the logic for purchasing an item
+*/
+void modifiedPurchaseItem(std::string ID);
 
 /**
  * Return in string format the change that was given

@@ -42,7 +42,7 @@ bool checkValidInput(std::string ID);
 /**
  * Prompts the user and takes input
 */
-void purchaseItemMenu();
+void modifiedPurchaseItemMenu();
 
 /**
  * Convert a Price object to a string description (e.g Price(3, 50) -> $3.50)
@@ -99,9 +99,17 @@ void completePayment(std::string itemID);
 */
 ItemPurchasedInfo purchasingItem(int amountLeftToPay);
 /**
+ * Handles the bulk of logic for purchasing an item with help statements
+*/
+ItemPurchasedInfo modifiedPurchasingItem(int amountLeftToPay);
+/**
  * Handles the rest of the logic for purchasing an item
 */
 void purchaseItem(std::string ID);
+/**
+ * Handles the rest of the logic for purchasing an item to work with help statements
+*/
+void modifiedPurchaseItem(std::string ID);
 
 /**
  * Return in string format the change that was given
@@ -242,7 +250,7 @@ bool checkValidInput(std::string ID) {
     return validInput;
 }
 
-void purchaseItemMenu() {
+void modifiedPurchaseItemMenu() {
     /**
      * Print the opening prompt
     */
@@ -250,26 +258,30 @@ void purchaseItemMenu() {
 
     std::string ID = Helper::readInput();
 
-    /**
-     * If the user entered ctrl-d or "", they wanted to cancel
-    */
-    if (!checkInputExists(ID)) {
+    
+    if (ID == HELPOPTION){
+            std::cout << "HELP: ENTER THE ID OF THE ITEM YOU WANT" << std::endl; 
+            modifiedPurchaseItemMenu();
+    }
+    else if (!checkInputExists(ID)) {
+        /**
+         * If the user entered ctrl-d or "", they wanted to cancel
+        */
         std::cout << "The task Purchase Item failed to run successfully." << std::endl;
     }
-
     /**
      * Otherwise, if they did not enter a valid input (go to checkValidInput() to see what is valid), 
      * then recursively start this logic again
     */
     else if (!checkValidInput(ID)) {
-        purchaseItemMenu();
+        modifiedPurchaseItemMenu();
     }
    
     /**
      * Otherwise, it can proceed to begin purchasing the item
     */
     else {
-        purchaseItem(ID);
+        modifiedPurchaseItem(ID);
     }
 }
 
@@ -518,7 +530,7 @@ void completePayment(std::string itemID) {
     stockListPi->updateStockCount(itemID);
 }
 
-ItemPurchasedInfo purchasingItem(int amountLeftToPay) {
+ItemPurchasedInfo modifiedPurchasingItem(int amountLeftToPay) {
     /**
      * Convert the total cents remaining to a Price object
     */
@@ -553,8 +565,12 @@ ItemPurchasedInfo purchasingItem(int amountLeftToPay) {
         /**
          * Check if the user entered ctrl-d or "", as this would indicate they want to cancel
         */
+       
         inputMoneyString = Helper::readInput();
+       
         inputExists = checkInputExists(inputMoneyString);
+        
+        
     }
 
     /**
@@ -580,14 +596,19 @@ ItemPurchasedInfo purchasingItem(int amountLeftToPay) {
      * Otherwise, the user still needs to enter more money
     */
     else if ((!finalChangeEdited) && (inputExists)) {
-        /**
-         * If the user doesn't enter a number, it cannot be used to pay for the item
-         * Recursively call the function
-        */
-        if (!Helper::isNumber(inputMoneyString)) {
+
+        if(inputMoneyString == HELPOPTION){
+            std::cout << "HELP: ENTER THE VALUE OF CURRENCY IN CENTS I.E. TO ENTER $1.00, TYPE 100" << std::endl; 
+            modifiedPurchasingItem(amountLeftToPay);
+        }
+        else if (!Helper::isNumber(inputMoneyString)) {
+            /**
+             * If the user doesn't enter a number, it cannot be used to pay for the item
+             * Recursively call the function
+            */
             std::cout << "Error: input was not a number. Please try again." << std::endl;
             std::cout << "Error: you did not enter a valid integer. Please try again." << std::endl;
-            purchasingItem(amountLeftToPay);
+            modifiedPurchasingItem(amountLeftToPay);
         }
 
         /**
@@ -609,19 +630,19 @@ ItemPurchasedInfo purchasingItem(int amountLeftToPay) {
             */
             amountLeftToPay -= inputMoney;
             listOfDenoms.push_back(inputMoney);
-            purchasingItem(amountLeftToPay);
+            modifiedPurchasingItem(amountLeftToPay);
         }
 
         /**
          * Otherwise, it's not an acceptable note or coin and,
         */
-        else if (inputExists) {
+        else if (inputExists && inputMoneyString != HELPOPTION) {
             /**
              * Recursively call the function again
             */
             Price attemptedPayment = centsToPrice(inputMoney);
-            std::cout << "Error: " << priceToString(attemptedPayment) << "is not a valid denomination of money. Please try again." << std::endl;
-            purchasingItem(amountLeftToPay);
+            std::cout << "Error: " << priceToString(attemptedPayment) << " is not a valid denomination of money. Please try again." << std::endl;
+            modifiedPurchasingItem(amountLeftToPay);
         }
     }
 
@@ -759,6 +780,249 @@ ChangeGivenInfo calculateChange(Price change) {
      * Return the struct containing information on the change given
     */
     return changeGivenInfo;
+}
+
+void modifiedPurchaseItem(std::string ID) {
+    /**
+     * Search for the stock by the ID that was entered by the user
+     * All validation is handled in getItemByID()
+    */
+    Node* item = getItemByID(ID);
+
+    /**
+     * There is a new item being purchased so all flags and vectors should be reset
+    */
+    resetDefaultValues();
+
+    std::string itemID = item->data->id;
+    std::string itemName = item->data->name;
+    std::string itemDescription = item->data->description;
+    Price itemPrice = item->data->price;
+
+    /**
+     * Print the opening menu and tutorial
+    */
+    std::cout << "You have selected \"" << itemName << " - " << itemDescription << "\". ";
+    std::cout << "This will cost you " << priceToString(itemPrice) << "." << std::endl;
+    std::cout << "Please hand over the money - type in the value of each note/coin in cents." << std::endl;
+    std::cout << "Press enter or ctrl-d on a new line to cancel this purchase: " << std::endl;
+
+    int itemPriceCents = priceToCents(itemPrice);
+
+    /**
+     * Start purchasing an item
+    */
+    resetDefaultValues();
+    ItemPurchasedInfo itemPurchasedInfo = modifiedPurchasingItem(itemPriceCents);
+    int changeToGiveCents = itemPurchasedInfo.amountOfChange;
+    bool purchased = itemPurchasedInfo.purchased;
+
+    /**
+     * If there was an item that was purchased,
+    */
+    if (purchased) {
+        /**
+         * Add the coins to the vending machine, and remove 1 stock
+        */
+        completePayment(itemID);
+
+        /**
+         * If there is change to be given,
+        */
+        if (0 > changeToGiveCents) {
+            Price changeToGivePrice = centsToPrice(abs(changeToGiveCents));
+
+            /**
+             * Get the string explanation of what change in coins was given back
+            */
+            resetDefaultValues();
+            ChangeGivenInfo changeGivenInfo = calculateChange(changeToGivePrice);
+            bool validChange = changeGivenInfo.validChange;
+            std::string descriptionOfChange = changeGivenInfo.descriptionOfChange;
+
+            /**
+             * Print that either the change was given, or it couldn't be completed
+            */
+            if (validChange) {
+                std::cout << "Here is your " << itemName << " and your change of " << priceToString(changeToGivePrice) << ":";
+                std::cout << descriptionOfChange << std::endl;
+            }
+
+            else {
+                std::cout << "Error: The change cannot be given as the machine does not have enough money. The ";
+                std::cout << "purchase will not go through." << std::endl;
+            }
+        }
+    }
+
+    /**
+     * If there was not an item that got purchased (the purchase was cancelled),
+    */
+    else {
+        std::cout << "Change of mind - here is your change:" << std::endl;
+        
+        /**
+         * And if there was any coins that were given to the machine, refund them
+        */
+        if (listOfDenoms.size() != 0) {
+            std::string changeString = printChangeGiven();
+            std::cout << changeString;
+        }
+
+        std::cout << std::endl;       
+    }
+
+    std::cout << "Please come again soon." << std::endl;
+}
+
+void purchaseItemMenu() {
+    /**
+     * Print the opening prompt
+    */
+    std::cout << "Please enter the id of the item you wish to purchase: ";
+
+    std::string ID = Helper::readInput();
+
+    /**
+     * If the user entered ctrl-d or "", they wanted to cancel
+    */
+    if (!checkInputExists(ID)) {
+        std::cout << "The task Purchase Item failed to run successfully." << std::endl;
+    }
+
+    /**
+     * Otherwise, if they did not enter a valid input (go to checkValidInput() to see what is valid), 
+     * then recursively start this logic again
+    */
+    else if (!checkValidInput(ID)) {
+        purchaseItemMenu();
+    }
+   
+    /**
+     * Otherwise, it can proceed to begin purchasing the item
+    */
+    else {
+        purchaseItem(ID);
+    }
+}
+
+ItemPurchasedInfo purchasingItem(int amountLeftToPay) {
+    /**
+     * Convert the total cents remaining to a Price object
+    */
+    Price amountLeftPrice = centsToPrice(amountLeftToPay);
+    std::string inputMoneyString = "temp";
+    int inputMoney = 0;
+    /**
+     * Create a struct ItemPurchasedInfo() that tracks both a) if the item was purchased, and b)
+     * the amount of change that should be given
+    */
+    ItemPurchasedInfo itemPurchasedInfo = ItemPurchasedInfo();
+
+    /**
+     * If the amount left to pay is 0, or negative then the amount of money required to buy the item
+     * has been paid
+     * 
+     * Therefore the item is purchased, and the function should exit
+    */
+    if (0 >= amountLeftToPay) {
+        wantToExit = true;
+        itemPurchased = true;
+    }
+
+    /**
+     * Otherwise there is still money that is needed to be paid, and the user should be prompted
+     * 
+     * But to ensure there are no errors, there is a check that the item is not purchased, and the 
+     * change that is needed to be given has not been set
+    */
+    else if ((!finalChangeEdited) && (!itemPurchased)) {
+        std::cout << "You still need to give us " << priceToString(amountLeftPrice) << ": ";
+        /**
+         * Check if the user entered ctrl-d or "", as this would indicate they want to cancel
+        */
+        inputMoneyString = Helper::readInput();
+        inputExists = checkInputExists(inputMoneyString);
+    }
+
+    /**
+     * If the user entered ctrl-d or "", they want to cancel
+     * 
+     * Therefore, the function should exit, and the item is not purchased (the user can only 
+     * enter an input if the item has not been purchased)
+    */
+    if (!inputExists) {
+        wantToExit = true;
+        itemPurchased = false;
+    }
+
+    /**
+     * If the function should exit (and it hasn't tried to exit prior), set the amount of change
+    */
+    if (wantToExit && !finalChangeEdited) {
+        finalChange = amountLeftToPay;
+        finalChangeEdited = true;
+    }
+
+    /**
+     * Otherwise, the user still needs to enter more money
+    */
+    else if ((!finalChangeEdited) && (inputExists)) {
+        /**
+         * If the user doesn't enter a number, it cannot be used to pay for the item
+         * Recursively call the function
+        */
+        if (!Helper::isNumber(inputMoneyString)) {
+            std::cout << "Error: input was not a number. Please try again." << std::endl;
+            std::cout << "Error: you did not enter a valid integer. Please try again." << std::endl;
+            purchasingItem(amountLeftToPay);
+        }
+
+        /**
+         * Otherwise, convert the input to an integer
+        */
+        else {
+            inputMoney = stoi(inputMoneyString);
+        }
+
+        /**
+         * If the denomination that the user entered is valid,
+        */
+        if (searchValidDenoms(inputMoney)) {
+            /**
+             * Subtract the value of the denomination from the total remaining
+             * Keep track of the denomination that was given (so that it can be 
+             * added to the vending machine's wallet later)
+             * Recursively call the function again
+            */
+            amountLeftToPay -= inputMoney;
+            listOfDenoms.push_back(inputMoney);
+            purchasingItem(amountLeftToPay);
+        }
+
+        /**
+         * Otherwise, it's not an acceptable note or coin and,
+        */
+        else if (inputExists) {
+            /**
+             * Recursively call the function again
+            */
+            Price attemptedPayment = centsToPrice(inputMoney);
+            std::cout << "Error: " << priceToString(attemptedPayment) << "is not a valid denomination of money. Please try again." << std::endl;
+            purchasingItem(amountLeftToPay);
+        }
+    }
+
+    /**
+     * Set whether or not the item was purchased, and the change that should be given to the user
+    */
+    itemPurchasedInfo.purchased = itemPurchased;
+    itemPurchasedInfo.amountOfChange = finalChange;
+
+    /**
+     * Return the struct containing information on the purchase
+    */
+    return itemPurchasedInfo;
 }
 
 void purchaseItem(std::string ID) {

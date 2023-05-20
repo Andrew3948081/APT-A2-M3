@@ -2,8 +2,8 @@
 #include <fstream>
 #include "LinkedList.h"
 #include "helper.h"
-//#include "PurchaseItem.h"
-#include "ModifiedPurchaseItem.h"
+#include "PurchaseItem.h"
+
 
 
 /**
@@ -34,6 +34,8 @@ void setDefaultCoinCounts(std::vector<Coin>& wallet);
 
 //modified main menu
 bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName);
+// MODIFIED MENU OPTION 2
+void modifiedPurchaseItemMenu();
 // MODIFIED MENU OPTION 4
 bool modifiedAddItem(LinkedList* stockList);
 // MODIFIED MENU OPTION 5
@@ -477,7 +479,7 @@ bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vect
             std::vector<Coin>* walletPtr = &wallet;
             setStockList(stockList);
             setWallet(walletPtr);
-            purchaseItemMenu();
+            modifiedPurchaseItemMenu();
             stockList = getStockList();
             walletPtr = getWallet();
             wallet = *walletPtr;
