@@ -3,6 +3,7 @@
 #include "LinkedList.h"
 #include "helper.h"
 #include "PurchaseItem.h"
+#include "DoublyLinkedList.h"
 
 
 
@@ -71,8 +72,14 @@ int main(int argc, char **argv)
     std::vector<Coin> wallet;
     std::vector<std::string> fileName;
 
+    //init modified linked list 
+    
+
     bool runModified = false;
+    //DoublyLinkedList* modiflist = new DoublyLinkedList;
+
    
+    
     if (argc == 4) {
         // HANDLE FIRST COMMAND LINE ARGUMENT
         // Stock file handler/validator
