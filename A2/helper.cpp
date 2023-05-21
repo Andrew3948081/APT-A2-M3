@@ -234,3 +234,10 @@ bool Helper::addItemPriceValidation(std::string* price){
     
 
 }
+
+bool Helper::isbool(std::string s){
+    if(s == "true" || s == "false"){
+        return true;
+    }
+    return false;
+}

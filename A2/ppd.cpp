@@ -30,6 +30,13 @@ void displayCoins(std::vector<Coin> wallet);
 //MENU OPTION 7
 void setDefaultCoinCounts(std::vector<Coin>& wallet);
 
+//modified main menu
+bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName);
+// MODIFIED MENU OPTION 4
+bool modifiedAddItem(LinkedList* stockList);
+// MODIFIED MENU OPTION 5
+bool modifiedDeleteItem(LinkedList* stockList);
+
 int main(int argc, char **argv)
 {
     /* validate command line arguments */
@@ -37,6 +44,7 @@ int main(int argc, char **argv)
     bool noArg = false;
     bool argError1 = false;
     bool argError2 = false;
+    bool argError3 = false;
 
     // Stock Error flags
     int getLineCount = NODATA;
@@ -51,16 +59,22 @@ int main(int argc, char **argv)
     bool badCount = false;
     bool coinDupe = false;
 
+    //Version Error flags 
+    bool versionError = false;
+
     //initialise linked list and coin vector
     LinkedList* stockList = new LinkedList;
     std::vector<Coin> wallet;
     std::vector<std::string> fileName;
 
-    if (argc == 3) {
+    bool runModified = false;
+   
+    if (argc == 4) {
         // HANDLE FIRST COMMAND LINE ARGUMENT
         // Stock file handler/validator
         std::string arg1(argv[1]);
         fileName.push_back(arg1);
+        
         // Each row is an object called stock
         std::ifstream stockFile(arg1); // Open stock file
         bool quit = false;
@@ -240,22 +254,49 @@ int main(int argc, char **argv)
         
         coinFile.close();
         stockFile.close();
+
+        // HANDLE THE THIRD COMMAND LINE ARGUMENT
+        
+        if (!Helper::isbool(argv[3])){
+            //argument 3 is incorrect
+            std::cout << "arg3 error: [m3]" << std::endl;
+            argError3 = true; 
+            versionError = true; 
+        }
+        else{
+            //if arg is boolean
+          
+            if (std::string(argv[3]) == "true"){
+                runModified = true;
+            }
+            else{
+                runModified = false;
+            }
+        }
+
     }
     else {
         std::cout << "Error: invalid arguments passed in." << std::endl;
         std::cout << "Correct arguments are:" << std::endl;
-        std::cout << "\t./ppd <stockfile> <coinfile>" << std::endl;
-        std::cout << "Where <stockfile> and <coinfile> are two valid files in the expected format." << std::endl;
+        std::cout << "\t./ppd <stockfile> <coinfile> <m3>" << std::endl;
+        std::cout << "Where <stockfile> and <coinfile> are two valid files in the expected format and ";
+        std::cout << "<m3> is a boolean value that decides what configuration the program is in " << std::endl;
         
         noArg = true;
     }
    
     //Main menu goes here then we can handle userinput to run different functions
-    if (!noArg && !argError1 && !argError2 && !isEmpty && !qtyError && !isInvalid && !prcError && 
-        !coinDupe && !coinIsEmpty && !badDenom && !badCount) {
+    if (!noArg && !argError1 && !argError2 && !argError3 && !isEmpty && !qtyError && !isInvalid && !prcError && 
+        !coinDupe && !coinIsEmpty && !badDenom && !badCount && !versionError ) {
 
-
-        mainMenu(stockList, wallet, fileName);
+        if (runModified == true){
+            //run program with milestone 3 modifications
+            modifiedMainMenu(stockList, wallet, fileName);
+        }
+        else{
+            mainMenu(stockList, wallet, fileName);
+        }
+        
     }
     
     // Error print statements
@@ -289,12 +330,14 @@ int main(int argc, char **argv)
             std::cout << "coin duplicate" << std::endl;
         }
     }
+    if (versionError) {
+        std::cout << "invalid version argument" << std::endl;
+    }
     
     delete stockList;
 
     return EXIT_SUCCESS;
 }
-
 
 //Main Menu
 bool mainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName) {
@@ -395,6 +438,108 @@ bool mainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::
     return saved;
 }
 
+//Modified Main Menu
+bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName) {
+    //initializing variables 
+    std::string input;
+    bool exit = false;
+    bool saved = true;
+    // main loop 
+    while(!(std::cin.eof()) && !(exit)){
+        std::cout << "Main Menu:" << std::endl;
+        std::cout << "    1.Display Items" << std::endl;
+        std::cout << "    2.Purchase Items" << std::endl;
+        std::cout << "    3.Save and Exit" << std::endl;
+        std::cout << "Administrator-Only Menu:" << std::endl;
+        std::cout << "    4.Add Item" << std::endl;
+        std::cout << "    5.Remove Item" << std::endl;
+        std::cout << "    6.Display Coins" << std::endl;
+        std::cout << "    7.Reset Stock" << std::endl;
+        std::cout << "    8.Reset Coins" << std::endl;
+        std::cout << "    9.Abort Program" << std::endl << std::endl;
+        std::cout << "Select your option (1-9): ";
+
+        //taking the input from user 
+        input = Helper::readInput();
+
+        
+
+        //option 1 
+        if(input == MENUOPTION1){
+            printItems(stockList);
+        }
+        //option 2
+        else if(input == MENUOPTION2){
+            std::cout << "Purchase Item" << std::endl;
+            std::cout << "-------------" << std::endl;
+            std::vector<Coin>* walletPtr = &wallet;
+            setStockList(stockList);
+            setWallet(walletPtr);
+            purchaseItemMenu();
+            stockList = getStockList();
+            walletPtr = getWallet();
+            wallet = *walletPtr;
+        }
+        //option 3 
+        else if(input == MENUOPTION3){
+            saveExit(stockList, wallet, fileName);
+            exit = true;
+            saved = true;
+        }
+        //option 4
+        else if(input == MENUOPTION4){
+            if(modifiedAddItem(stockList) == false){
+                std::cout << "The task Add Item failed to run successfully." << std::endl; 
+            }
+            
+        }
+        //option 5
+        else if(input == MENUOPTION5){
+            if(modifiedDeleteItem(stockList) == false){
+                std::cout << "The task Remove Item failed to run successfully." << std::endl; 
+            }
+        }
+        //option 6
+        else if(input == MENUOPTION6){
+            displayCoins(wallet);
+        }
+        //option 7
+        else if(input == MENUOPTION7){
+            stockList->resetStocks();
+        }
+        //option 8
+        else if(input == MENUOPTION8){
+            setDefaultCoinCounts(wallet);
+            setWallet(&wallet);
+        }
+        //option 9
+        else if(input == MENUOPTION9){
+            exit = true;
+            saved = false;
+        }
+        else if(input == HELPOPTION){
+            std::cout << "HELP: ENTER A NUMBER BETWEEN 1-9 TO DO THE CORRESPONDING TASK" << std::endl;
+        }
+        else if(Helper::emptyString(input)){
+            //if user presses enter on empty line abort program
+            exit = true;
+            saved = false;
+        }
+        else if(!Helper::isMenuNumber(input)){
+            //input is not number
+            std::cout << "Error: input was not a number. Please try again." << std::endl << std::endl;
+
+        }
+        //input is beyond the number range in the main menu
+        else {
+            std::cout << "Error: menu item selected is not valid." << std::endl << std::endl; 
+        }
+
+    }
+
+    return saved;
+}
+
 //saves and stores in file
 void saveExit(LinkedList* sL, std::vector<Coin> wlt, std::vector<std::string> fileName){
     std::ofstream coinFile;
@@ -446,7 +591,6 @@ void printItems(LinkedList* stockList) {
     stockList->displayItems();
     std::cout << std::endl;
 }
-
 //allows user to add item in list 
 bool addItem(LinkedList* stockList) {
     std::string name;
@@ -533,6 +677,133 @@ bool deleteItem(LinkedList* stockList) {
         std::cout << "Error: line entered was too long. Please try again." << std::endl;
         std::cout << "Error: invalid item id entered. Please try again." << std::endl;
         std::cout << "Enter the item id of the item to remove from the menu: ";
+        id = Helper::readInput();
+    }
+    
+    if(Helper::emptyString(id)){
+        //empty string 
+        std::cout << "Operation cancelled at the user's request." << std::endl;
+        return false;
+    }
+    if(stockList->deleteNode(id)){
+        //success
+        return true;
+    }
+    else{
+        //node not found
+        std::cout << "Error: desired id was not found." << std::endl;
+        return false;
+    }
+}
+
+//allows user to add item in list 
+bool modifiedAddItem(LinkedList* stockList) {
+    std::string name;
+    std::string description;
+    std::string priceString;
+    std::vector<std::string> priceVec;
+
+    //work out new id number
+    std::string id = stockList->getLargestId();
+    id = Helper::incrementId(id);
+
+    std::cout << "The id of the new stock will be: " << id << std::endl;
+
+    std::cout << "Enter the item name: ";
+    name = Helper::readInput();
+    while(name.length() == 0 || name.length() > NAMELEN || name == HELPOPTION){
+        if(Helper::emptyString(name)){
+            //if string is empty return to MM and write correct error message
+            std::cout << "Cancelling \"add item\" at user's request." << std::endl;
+            return false;
+        }
+        else if(name == HELPOPTION){
+            std::cout << "HELP: ENTER A NAME FOR YOUR ITEM" << std::endl;
+        }
+        else{
+            //otherwise if the name is too long ask again
+            std::cout << "Error: line entered was too long. Please try again." << std::endl;
+            std::cout << "Error inputting name of the product. Please try again." << std::endl; 
+            
+        }
+        std::cout << "Enter the item name: ";
+        name = Helper::readInput();
+    }
+   
+
+    std::cout << "Enter the item description: ";
+    description = Helper::readInput();
+    while(description.length() == 0 || description.length() > DESCLEN || description == HELPOPTION){
+        if(Helper::emptyString(description)){
+            //if string is empty return to MM and write correct error message
+            std::cout << "Cancelling \"add item\" at the user's request." << std::endl;
+            return false;
+        }
+        else if(description == HELPOPTION){
+            std::cout << "HELP: ENTER A DESCRIPTION FOR YOUR ITEM" << std::endl;
+        }
+        else{
+            //otherwise if the description is too long ask again
+            std::cout << "Error: line entered was too long. Please try again." << std::endl;
+            std::cout << "Error inputting the description of the product. Please try again." << std::endl; 
+            
+        }
+        std::cout << "Enter the item description: ";
+        description = Helper::readInput();
+    }
+    
+
+    std::cout << "Enter the price for the item: ";
+    priceString = Helper::readInput();
+
+    while(!Helper::addItemPriceValidation(&priceString)){
+        if(Helper::emptyString(priceString)){
+            //if string is empty return to MM and write correct error message
+            std::cout << "Cancelling \"add item\" at the user's request." << std::endl;
+            return false;
+        }
+        if(priceString == HELPOPTION){
+            std::cout << "HELP: ENTER A PRICE FOR THE ITEM BETWEEN 0.00-99.99 DOLLARS" << std::endl;
+        }
+        std::cout << "Enter the price for the item: ";
+        priceString = Helper::readInput();
+    }
+   
+    Helper::splitString(priceString, priceVec, PRICEDELIM);
+
+    Price cost;
+    cost.dollars = std::stoi(priceVec[0]);
+    cost.cents = std::stoi(priceVec[1]);
+  
+
+    Node* newItem = new Node();
+    newItem->createNode(id, name, description, cost, DEFAULT_STOCK_LEVEL);
+
+    stockList->addNode(newItem);
+    std::cout << "This item \"" << name << " - " << description;
+    std::cout << "\" has now been added to the menu." << std::endl;
+    return true;
+}
+
+//removes item in menu 
+bool modifiedDeleteItem(LinkedList* stockList) {
+    std::string id;
+
+    std::cout << "Enter the item id of the item to remove from the menu: ";
+    id = Helper::readInput();
+    while(id.length() > IDLEN || id == HELPOPTION){
+        if(id == HELPOPTION){
+            //if the user requests help
+            std::cout << "HELP: ENTER THE ID OF THE ITEM YOU WANT TO DELETE" << std::endl;
+        }
+        else{
+            //if entered id is too long re prompt the user
+            std::cout << "Error: line entered was too long. Please try again." << std::endl;
+            std::cout << "Error: invalid item id entered. Please try again." << std::endl;
+        }
+      
+        std::cout << "Enter the item id of the item to remove from the menu: ";
+
         id = Helper::readInput();
     }
     

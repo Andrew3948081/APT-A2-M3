@@ -74,6 +74,8 @@
 #define MENUOPTION8 "8"
 #define MENUOPTION9 "9"
 
+//option to request help
+#define HELPOPTION "help"
 
 /**
  * a structure to represent a price. One of the problems with the floating

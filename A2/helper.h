@@ -66,5 +66,8 @@ public:
 
     //returns true if string is number (modified to work with negative ints)
     static bool isMenuNumber(const std::string &s);
+
+    //returns true if value is boolean
+    static bool isbool(const std::string s);
 };
 #endif
