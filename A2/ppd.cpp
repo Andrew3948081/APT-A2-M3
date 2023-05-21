@@ -2,7 +2,9 @@
 #include <fstream>
 #include "LinkedList.h"
 #include "helper.h"
-#include "PurchaseItem.h"
+//#include "PurchaseItem.h"
+#include "ModifiedPurchaseItem.h"
+
 
 /**
  * manages the running of the program, initialises data structures, loads
