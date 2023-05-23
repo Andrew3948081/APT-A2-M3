@@ -34,13 +34,17 @@ void displayCoins(std::vector<Coin> wallet);
 void setDefaultCoinCounts(std::vector<Coin>& wallet);
 
 //modified main menu
-bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName);
+bool modifiedMainMenu(DoublyLinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName);
+// MENU OPTION 1
+void modifiedPrintItems(DoublyLinkedList* stockList);
 // MODIFIED MENU OPTION 2
 void modifiedPurchaseItemMenu();
+// MENU OPTION 3
+void modifiedSaveExit(DoublyLinkedList* sL, std::vector<Coin> wlt, std::vector<std::string> fileName);
 // MODIFIED MENU OPTION 4
-bool modifiedAddItem(LinkedList* stockList);
+bool modifiedAddItem(DoublyLinkedList* stockList);
 // MODIFIED MENU OPTION 5
-bool modifiedDeleteItem(LinkedList* stockList);
+bool modifiedDeleteItem(DoublyLinkedList* stockList);
 
 int main(int argc, char **argv)
 {
@@ -76,7 +80,7 @@ int main(int argc, char **argv)
     
 
     bool runModified = false;
-    //DoublyLinkedList* modiflist = new DoublyLinkedList;
+    DoublyLinkedList* modifiedStockList = new DoublyLinkedList;
 
    
     
@@ -89,6 +93,28 @@ int main(int argc, char **argv)
         // Each row is an object called stock
         std::ifstream stockFile(arg1); // Open stock file
         bool quit = false;
+
+        // HANDLE THE THIRD COMMAND LINE ARGUMENT
+        
+        if (!Helper::isbool(argv[3])){
+            //argument 3 is incorrect
+            std::cout << "arg3 error: [m3]" << std::endl;
+            argError3 = true; 
+            versionError = true; 
+            quit = true;
+        }
+        else{
+            //if arg is boolean
+          
+            if (std::string(argv[3]) == "true"){
+                runModified = true;
+            }
+            else{
+                runModified = false;
+            }
+        }
+
+
         // Checks if the file has data inside
         if (stockFile.good() && stockFile.is_open()) {
             std::string stockLine = "";
@@ -104,6 +130,19 @@ int main(int argc, char **argv)
 
                     // // Create a stock node heap
                     Node* stockNode = new Node();
+                    ModifiedNode* modifiedStockNode = new ModifiedNode();
+
+                    
+                    // if(runModified == true){
+                    //     delete stockNode;
+                       
+                    // }
+                    // else{
+                    //     delete modifiedStockNode;
+                    // }
+                   
+
+                        
                     
                     // Check if the price has a '.' (full stop) char
                     std::string* stockPrice = &token[3];
@@ -141,9 +180,19 @@ int main(int argc, char **argv)
                     // Check if quantity is a valid number
                     bool qtyValid = Helper::isNumber(token[4]);
                     if (qtyValid){
-                        stockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]));
-                        // Append node to linkedlist
-                        stockList->addNode(stockNode);
+                        if(runModified == true){
+                            //if running the modified program do this
+                            
+                            modifiedStockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]));
+                            // Append node to linkedlist
+                            modifiedStockList->addNode(modifiedStockNode);
+                        }
+                        else{
+                            stockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]));
+                            // Append node to linkedlist
+                            stockList->addNode(stockNode);
+                        }
+                        
                     }
                     else {
                         // Quantity error flag
@@ -266,25 +315,6 @@ int main(int argc, char **argv)
         coinFile.close();
         stockFile.close();
 
-        // HANDLE THE THIRD COMMAND LINE ARGUMENT
-        
-        if (!Helper::isbool(argv[3])){
-            //argument 3 is incorrect
-            std::cout << "arg3 error: [m3]" << std::endl;
-            argError3 = true; 
-            versionError = true; 
-        }
-        else{
-            //if arg is boolean
-          
-            if (std::string(argv[3]) == "true"){
-                runModified = true;
-            }
-            else{
-                runModified = false;
-            }
-        }
-
     }
     else {
         std::cout << "Error: invalid arguments passed in." << std::endl;
@@ -302,7 +332,7 @@ int main(int argc, char **argv)
 
         if (runModified == true){
             //run program with milestone 3 modifications
-            modifiedMainMenu(stockList, wallet, fileName);
+            modifiedMainMenu(modifiedStockList, wallet, fileName);
         }
         else{
             mainMenu(stockList, wallet, fileName);
@@ -450,7 +480,7 @@ bool mainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::
 }
 
 //Modified Main Menu
-bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName) {
+bool modifiedMainMenu(DoublyLinkedList* stockList, std::vector<Coin> wallet, std::vector<std::string> fileName) {
     //initializing variables 
     std::string input;
     bool exit = false;
@@ -477,23 +507,23 @@ bool modifiedMainMenu(LinkedList* stockList, std::vector<Coin> wallet, std::vect
 
         //option 1 
         if(input == MENUOPTION1){
-            printItems(stockList);
+            modifiedPrintItems(stockList);
         }
         //option 2
         else if(input == MENUOPTION2){
             std::cout << "Purchase Item" << std::endl;
             std::cout << "-------------" << std::endl;
             std::vector<Coin>* walletPtr = &wallet;
-            setStockList(stockList);
+            modifiedSetStockList(stockList);
             setWallet(walletPtr);
             modifiedPurchaseItemMenu();
-            stockList = getStockList();
+            stockList = modifiedGetStockList();
             walletPtr = getWallet();
             wallet = *walletPtr;
         }
         //option 3 
         else if(input == MENUOPTION3){
-            saveExit(stockList, wallet, fileName);
+            modifiedSaveExit(stockList, wallet, fileName);
             exit = true;
             saved = true;
         }
@@ -591,10 +621,59 @@ void saveExit(LinkedList* sL, std::vector<Coin> wlt, std::vector<std::string> fi
     coinFile.close();
     stockFile.close();
 }
+//saves and stores in file
+void modifiedSaveExit(DoublyLinkedList* sL, std::vector<Coin> wlt, std::vector<std::string> fileName){
+    std::ofstream coinFile;
+    coinFile.open(fileName[1]);
+    for (int i = 0; i < int(wlt.size()); i++) {
+        //std::cout << "saved" << std::endl;
+        if (wlt[i].denom == FIVE_CENTS) {
+            coinFile << "5," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == TEN_CENTS) {
+            coinFile << "10," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == TWENTY_CENTS) {
+            coinFile << "20," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == FIFTY_CENTS) {
+            coinFile << "50," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == ONE_DOLLAR) {
+            coinFile << "100," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == TWO_DOLLARS) {
+            coinFile << "200," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == FIVE_DOLLARS) {
+            coinFile << "500," << wlt[i].count << std::endl; 
+        } else if (wlt[i].denom == TEN_DOLLARS) {
+            coinFile << "1000," << wlt[i].count << std::endl; 
+        }
+    }
+    
+    std::ofstream stockFile;
+    stockFile.open(fileName[0]);
+        ModifiedNode* ptr = sL->head;    
+        while (ptr) {  
+            stockFile << ptr->data->id << "|";
+            stockFile << ptr->data->name << "|";
+            stockFile << ptr->data->description << "|";
+            stockFile << ptr->data->price.dollars << "." << ptr->data->price.cents << "|";
+            stockFile << ptr->data->on_hand << std::endl;
+            ptr = ptr->next;  
+        }  
 
+    coinFile.close();
+    stockFile.close();
+}
 
 //prints the items 
 void printItems(LinkedList* stockList) {
+    std::cout << "Items Menu" << std::endl;
+    std::cout << "----------" << std::endl;
+    std::cout << "ID   |Name                                    | Available | Price" << std::endl;
+    std::cout << "-------------------------------------------------------------------" << std::endl;
+    stockList->displayItems();
+    std::cout << std::endl;
+}
+
+//prints the items 
+void modifiedPrintItems(DoublyLinkedList* stockList) {
     std::cout << "Items Menu" << std::endl;
     std::cout << "----------" << std::endl;
     std::cout << "ID   |Name                                    | Available | Price" << std::endl;
@@ -708,7 +787,7 @@ bool deleteItem(LinkedList* stockList) {
 }
 
 //allows user to add item in list 
-bool modifiedAddItem(LinkedList* stockList) {
+bool modifiedAddItem(DoublyLinkedList* stockList) {
     std::string name;
     std::string description;
     std::string priceString;
@@ -787,7 +866,7 @@ bool modifiedAddItem(LinkedList* stockList) {
     cost.cents = std::stoi(priceVec[1]);
   
 
-    Node* newItem = new Node();
+    ModifiedNode* newItem = new ModifiedNode();
     newItem->createNode(id, name, description, cost, DEFAULT_STOCK_LEVEL);
 
     stockList->addNode(newItem);
@@ -797,7 +876,7 @@ bool modifiedAddItem(LinkedList* stockList) {
 }
 
 //removes item in menu 
-bool modifiedDeleteItem(LinkedList* stockList) {
+bool modifiedDeleteItem(DoublyLinkedList* stockList) {
     std::string id;
 
     std::cout << "Enter the item id of the item to remove from the menu: ";

@@ -5,6 +5,7 @@
 #include "helper.h"
 #include "Coin.h"
 #include "PurchaseItem.h"
+#include "DoublyLinkedList.h"
 
 /**
  * --------------------------------------------------------
@@ -17,23 +18,26 @@
 */
 void setStockList(LinkedList* stockListPPD);
 void setWallet(std::vector<Coin>* walletPPD);
+void modifiedSetStockList(DoublyLinkedList* stockListPPD);
 
 /**
  * Getter functions so that the contents from PurchaseItem.cpp can be updated in ppd.cpp
 */
 LinkedList* getStockList();
 std::vector<Coin>* getWallet();
+//DoublyLinkedList* modifiedGetStockList();
 
 /**
  * Search the available stock by an ID
 */
 Node* getItemByID(std::string ID);
+ModifiedNode* modifiedGetItemByID(std::string ID);
 
 /**
  * Check if the user entered ctrl-d or ""
 */
 bool checkInputExists(std::string input);
-
+bool modifiedCheckValidInput(std::string ID);
 /**
  * Check if the input is correct
 */
@@ -93,6 +97,7 @@ int findIndexOfDenom(int cents);
  * Add the notes/coins that were used to pay for the item to the vending machine's wallet
 */
 void completePayment(std::string itemID);
+void modifiedCompletePayment(std::string itemID);
 
 /**
  * Handles the bulk of logic for purchasing an item
@@ -134,6 +139,8 @@ ChangeGivenInfo calculateChange(Price change);
 */
 LinkedList* stockListPi;
 std::vector<Coin>* walletPi;
+
+DoublyLinkedList* modifiedStockListPi;
 /**
  * Create a vector that stores a list of different amounts of money
 */
@@ -169,6 +176,14 @@ void setStockList(LinkedList* stockListPPD) {
     stockListPi = stockListPPD;
 }
 
+void modifiedSetStockList(DoublyLinkedList* stockListPPD) {
+    /**
+     * Set the contents of the stockList copy
+    */
+    // set the stockList copy to what stockList is in PPD
+    modifiedStockListPi = stockListPPD;
+}
+
 void setWallet(std::vector<Coin>* walletPPD) {
     /**
      * Set the contents of the wallet copy
@@ -190,11 +205,26 @@ std::vector<Coin>* getWallet() {
     return walletPi;
 }
 
+DoublyLinkedList* modifiedGetStockList() {
+    /**
+     * Return the copy of the stockList so that the stockList can be updated globally
+    */
+    return modifiedStockListPi;
+}
+
 Node* getItemByID(std::string ID) {
     /**
      * Loop through the stockList LinkedList to try and find the item with id = ID
     */
     Node* item = stockListPi->searchID(ID);
+    return item;
+}
+
+ModifiedNode* modifiedGetItemByID(std::string ID){
+     /**
+     * Loop through the stockList DoublyLinkedList to try and find the item with id = ID
+    */
+    ModifiedNode* item = modifiedStockListPi->searchID(ID);
     return item;
 }
 
@@ -216,6 +246,46 @@ bool checkValidInput(std::string ID) {
      * Search for the item to check if it exists
     */
     Node* item = getItemByID(ID);
+    bool print = true;
+
+    /**
+     * If the user entered ctrl-d or "", it should not print any extra information as they wanted to cancel
+    */
+    if (!checkInputExists(ID)) {
+        print = false;
+    }
+    
+    /**
+     * If the item is a nullptr, it means it is the default value thus ID does not exist
+    */
+    if (item == nullptr) {
+        if (print) {
+            std::cout << "Error: you did not enter a valid id. Please try again." << std::endl << std::endl;
+        }
+        
+        validInput = false;
+    }
+
+    /**
+     * Otherwise, if there is no available stock, the user cannot purchase the item
+    */
+    else if (item->data->on_hand == 0) {
+        if (print) {
+            std::cout << "Item is out of stock." << std::endl << std::endl;
+        }
+    
+        validInput = false;
+    }
+
+    return validInput;
+}
+
+bool modifiedCheckValidInput(std::string ID) {
+    bool validInput = true;
+    /**
+     * Search for the item to check if it exists
+    */
+    ModifiedNode* item = modifiedGetItemByID(ID);
     bool print = true;
 
     /**
@@ -273,7 +343,7 @@ void modifiedPurchaseItemMenu() {
      * Otherwise, if they did not enter a valid input (go to checkValidInput() to see what is valid), 
      * then recursively start this logic again
     */
-    else if (!checkValidInput(ID)) {
+    else if (!modifiedCheckValidInput(ID)) {
         modifiedPurchaseItemMenu();
     }
    
@@ -281,6 +351,7 @@ void modifiedPurchaseItemMenu() {
      * Otherwise, it can proceed to begin purchasing the item
     */
     else {
+        
         modifiedPurchaseItem(ID);
     }
 }
@@ -528,6 +599,24 @@ void completePayment(std::string itemID) {
      * Update the stock of the item that was bought (-1 from the total stock)
     */
     stockListPi->updateStockCount(itemID);
+}
+
+void modifiedCompletePayment(std::string itemID) {
+    /**
+     * Loop through each note / coin that was used to pay for an item and, 
+    */
+    for (int i = 0; i < int(listOfDenoms.size()); i++) {
+        /**
+         * Add it to the vending machine's wallet
+        */
+        int indexOfDenom = findIndexOfDenom(listOfDenoms[i]);
+        walletPi->at(indexOfDenom).count += 1;
+    }
+
+    /**
+     * Update the stock of the item that was bought (-1 from the total stock)
+    */
+    modifiedStockListPi->updateStockCount(itemID);
 }
 
 ItemPurchasedInfo modifiedPurchasingItem(int amountLeftToPay) {
@@ -787,7 +876,7 @@ void modifiedPurchaseItem(std::string ID) {
      * Search for the stock by the ID that was entered by the user
      * All validation is handled in getItemByID()
     */
-    Node* item = getItemByID(ID);
+    ModifiedNode* item = modifiedGetItemByID(ID);
 
     /**
      * There is a new item being purchased so all flags and vectors should be reset
@@ -824,7 +913,8 @@ void modifiedPurchaseItem(std::string ID) {
         /**
          * Add the coins to the vending machine, and remove 1 stock
         */
-        completePayment(itemID);
+       
+        modifiedCompletePayment(itemID);
 
         /**
          * If there is change to be given,

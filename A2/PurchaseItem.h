@@ -5,6 +5,7 @@
 #include <fstream>
 #include "LinkedList.h"
 #include "helper.h"
+#include "DoublyLinkedList.h"
 
 /**
  * Create a definition for denomination into total cents
@@ -66,18 +67,20 @@ struct ChangeGivenInfo {
 */
 void setStockList(LinkedList* stockListPPD);
 void setWallet(std::vector<Coin>* walletPPD);
+void modifiedSetStockList(DoublyLinkedList* stockListPPD);
 
 /**
  * Getter functions so that the contents from PurchaseItem.cpp can be updated in ppd.cpp
 */
 LinkedList* getStockList();
 std::vector<Coin>* getWallet();
+DoublyLinkedList* modifiedGetStockList();
 
 /**
  * Search the available stock by an ID
 */
 Node* getItemByID(std::string ID);
-
+ModifiedNode* modifiedGetItemByID(std::string ID);
 /**
  * Check if the user entered ctrl-d or ""
 */
@@ -87,6 +90,7 @@ bool checkInputExists(std::string input);
  * Check if the input is correct
 */
 bool checkValidInput(std::string ID);
+bool modifiedCheckValidInput(std::string ID);
 /**
  * Prompts the user and takes input
 */
@@ -145,6 +149,7 @@ int findIndexOfDenom(int cents);
  * Add the notes/coins that were used to pay for the item to the vending machine's wallet
 */
 void completePayment(std::string itemID);
+void modifiedCompletePayment(std::string itemID);
 
 /**
  * Handles the bulk of logic for purchasing an item

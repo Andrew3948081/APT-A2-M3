@@ -77,18 +77,18 @@
 //option to request help
 #define HELPOPTION "help"
 
-/**
- * a structure to represent a price. One of the problems with the floating
- * point formats in C++ like float and double is that they have minor issues
- * of inaccuracy due to rounding. In the case of currency this really is
- * not acceptable so we introduce our own type to keep track of currency.
- **/
-class ModifiedPrice
-{
-public:
-    // The dollar value, and the cents value for some price
-    unsigned dollars, cents;
-};
+// /**
+//  * a structure to represent a price. One of the problems with the floating
+//  * point formats in C++ like float and double is that they have minor issues
+//  * of inaccuracy due to rounding. In the case of currency this really is
+//  * not acceptable so we introduce our own type to keep track of currency.
+//  **/
+// class ModifiedPrice
+// {
+// public:
+//     // The dollar value, and the cents value for some price
+//     unsigned dollars, cents;
+// };
 
 /**
  * data structure to represent a stock item within the system
@@ -106,7 +106,7 @@ public:
     std::string description;
     
     //the price of this item
-    ModifiedPrice price;
+    Price price;
     
     // how many of this item do we have on hand? 
     unsigned on_hand;    
@@ -121,7 +121,7 @@ public:
     ModifiedNode();
     ~ModifiedNode();
 
-    void createNode(std::string ID, std::string name, std::string desc, ModifiedPrice price, int on_hand);
+    void createNode(std::string ID, std::string name, std::string desc, Price price, int on_hand);
 
     // pointer to the data held for the node 
     ModifiedStock* data;

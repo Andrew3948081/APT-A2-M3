@@ -28,4 +28,17 @@ public:
     ~Coin();
 };
 
+/**
+ * a structure to represent a price. One of the problems with the floating
+ * point formats in C++ like float and double is that they have minor issues
+ * of inaccuracy due to rounding. In the case of currency this really is
+ * not acceptable so we introduce our own type to keep track of currency.
+ **/
+class Price
+{
+public:
+    // The dollar value, and the cents value for some price
+    unsigned dollars, cents;
+};
+
 #endif // COIN_H

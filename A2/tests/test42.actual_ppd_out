@@ -12,7 +12,7 @@ Administrator-Only Menu:
 
 Select your option (1-9): Purchase Item
 -------------
-Please enter the id of the item you wish to purchase: You have selected "Meat Pie - Yummy Beef in Gravy surrounded by pastry". This will cost you $3.50.
+Please enter the id of the item you wish to purchase: hereYou have selected "Meat Pie - Yummy Beef in Gravy surrounded by pastry". This will cost you $3.50.
 Please hand over the money - type in the value of each note/coin in cents.
 Press enter or ctrl-d on a new line to cancel this purchase: 
 You still need to give us $3.50: Error: input was not a number. Please try again.

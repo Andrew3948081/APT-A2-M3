@@ -16,7 +16,7 @@ ModifiedNode::~ModifiedNode()
 
 
 
-void ModifiedNode::createNode(std::string id, std::string name, std::string desc, ModifiedPrice price, int on_hand) {
+void ModifiedNode::createNode(std::string id, std::string name, std::string desc, Price price, int on_hand) {
     this->data = new ModifiedStock;
     this->data->id = id;
     this->data->name = name;
