@@ -696,8 +696,8 @@ void printItems(LinkedList* stockList) {
 void modifiedPrintItems(DoublyLinkedList* stockList) {
     std::cout << "Items Menu" << std::endl;
     std::cout << "----------" << std::endl;
-    std::cout << "ID   |Name                                    | Available | Price | Item Options " << std::endl;
-    std::cout << "-------------------------------------------------------------------" << stockList->itemOptionsBorder() << std::endl;
+    std::cout << "ID   |Name                                    | Available | Price  | Item Options " << std::endl;
+    std::cout << "--------------------------------------------------------------------" << stockList->itemOptionsBorder() << std::endl;
     stockList->displayItems();
     std::cout << std::endl;
 }
@@ -842,8 +842,34 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
    
     ItemOptionsll* newItemOptions = new ItemOptionsll;
     //handle adding item options here
-
-
+    std::string optionsInput;
+    while(optionsInput != "n"){
+        std::cout << "Enter an additional variation of the product" << std::endl;
+        std::cout << "Enter \"n\" to finish adding variations" << std::endl;
+        std::cout << "Enter the item variation name: ";
+        optionsInput = Helper::readInput();
+        
+        if(Helper::emptyString(optionsInput)){
+            //if string is empty return to MM and write correct error message
+            std::cout << "Cancelling \"add item\" at user's request." << std::endl;
+            return false;
+        }
+        else if(optionsInput.length() == 0 || optionsInput.length() > NAMELEN){
+            std::cout << "Error: line entered was too long. Please try again." << std::endl;
+            std::cout << "Error inputting item option of the product. Please try again." << std::endl; 
+        }
+        else if(optionsInput == "n"){
+           std::cout << "Finishing" << std::endl;
+           newItemOptions->display();
+        }
+        else if(optionsInput == HELPOPTION){
+            std::cout << "HELP: ENTER ANY ITEM VARIATIONS, PRESS 'n' TO CONTINUE" <<std::endl;
+        }
+        else{
+            //add option
+            newItemOptions->insert(optionsInput);
+        }
+    }
 
     std::cout << "Enter the item description: ";
     description = Helper::readInput();
