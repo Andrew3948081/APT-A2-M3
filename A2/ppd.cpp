@@ -674,7 +674,8 @@ void modifiedSaveExit(DoublyLinkedList* sL, std::vector<Coin> wlt, std::vector<s
             stockFile << ptr->data->name << "|";
             stockFile << ptr->data->description << "|";
             stockFile << ptr->data->price.dollars << "." << ptr->data->price.cents << "|";
-            stockFile << ptr->data->on_hand << std::endl;
+            stockFile << ptr->data->on_hand << "|";
+            stockFile << ptr->data->itemOptions->getItems() << std::endl;
             ptr = ptr->next;  
         }  
 
@@ -843,7 +844,7 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
     ItemOptionsll* newItemOptions = new ItemOptionsll;
     //handle adding item options here
     std::string optionsInput;
-    while(optionsInput != "n"){
+    while(optionsInput != CANCELITEMVAR){
         std::cout << "Enter an additional variation of the product" << std::endl;
         std::cout << "Enter \"n\" to finish adding variations" << std::endl;
         std::cout << "Enter the item variation name: ";
@@ -858,9 +859,15 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
             std::cout << "Error: line entered was too long. Please try again." << std::endl;
             std::cout << "Error inputting item option of the product. Please try again." << std::endl; 
         }
-        else if(optionsInput == "n"){
-           std::cout << "Finishing" << std::endl;
-           newItemOptions->display();
+        else if(optionsInput == CANCELITEMVAR){
+            if(newItemOptions->head != NULL){
+                std::cout << "Your item has the following variations:" << std::endl;
+                newItemOptions->display();
+            }
+            else{
+                std::cout << "Your item has the no variations" << std::endl;
+            }
+            
         }
         else if(optionsInput == HELPOPTION){
             std::cout << "HELP: ENTER ANY ITEM VARIATIONS, PRESS 'n' TO CONTINUE" <<std::endl;
@@ -877,6 +884,7 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
         if(Helper::emptyString(description)){
             //if string is empty return to MM and write correct error message
             std::cout << "Cancelling \"add item\" at the user's request." << std::endl;
+            delete newItemOptions;
             return false;
         }
         else if(description == HELPOPTION){

@@ -95,3 +95,30 @@ int ItemOptionsll::getTotalLength(){
     }
     return length;
 }
+
+bool ItemOptionsll::itemExist(const std::string s){
+    ItemOptionsNode* current = head;
+    while (current != NULL) {
+        if(current->data == s){
+            return true;
+        }
+        
+        current = current->next;
+    }
+    //item does not exist
+    return false;
+}
+
+std::string ItemOptionsll::getItems() {
+    ItemOptionsNode* current = head;
+    std::string items;
+    while (current != NULL) {
+        
+        items += current->data;
+        if(current->next != NULL){
+            items += "," ;
+        }
+        current = current->next;
+    }
+    return items;
+}

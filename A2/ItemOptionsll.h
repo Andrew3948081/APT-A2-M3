@@ -21,14 +21,22 @@
 // };
 
 class ItemOptionsll {
-private:
-    ItemOptionsNode* head;
+
+    
 public:
+    ItemOptionsNode* head;
     ItemOptionsll();
     ~ItemOptionsll();
+    //insert item to the list
     void insert(std::string val);
+    //display the items for displaying 
     void display();
+    //get the total length of the string
     int getTotalLength();
+    //check if item exists in list
+    bool itemExist(const std::string s);
+    //get all the items in the list for save file
+    std::string getItems();
 };
 
 #endif //ITEMOPTSLINKEDLIST_H

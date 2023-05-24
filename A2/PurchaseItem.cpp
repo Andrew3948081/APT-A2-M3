@@ -887,6 +887,51 @@ void modifiedPurchaseItem(std::string ID) {
     std::string itemName = item->data->name;
     std::string itemDescription = item->data->description;
     Price itemPrice = item->data->price;
+    ItemOptionsll* itemOpts = item->data->itemOptions;
+    std::string itemOption;
+
+    bool itemChosen = false;
+    //determine item Options
+    
+    while(itemChosen == false){
+        if(itemOpts->head != nullptr){
+            std::cout << "This item has multiple options" << std::endl;
+            //print options 
+            ItemOptionsNode* currentNode = itemOpts->head;
+            while(currentNode != nullptr){
+                std::cout << " - " << currentNode->data << std::endl; 
+                currentNode = currentNode->next;
+            }
+            std::cout << "Enter the name of the item option you want to purchase, press enter to use default:";
+            itemOption = Helper::readInput();
+            
+            if(Helper::emptyString(itemOption)){
+                std::cout << "Default item selected" << std::endl;
+                itemChosen = true;
+            }
+            else if(itemOption == HELPOPTION){
+                std::cout << "HELP: ENTER THE NAME OF THE ITEM YOU WANT" << std::endl;
+            }
+            else{
+                if(itemOpts->itemExist(itemOption)){
+                    //item exists
+                    itemName = itemOption; 
+                    std::cout << "Option changed to " << itemOption << std::endl;
+                    itemChosen = true;
+                }
+                else{
+                    //item does not exist
+                    std::cout << "That option does not exist, please try again" << std::endl;
+                }
+            }
+        }
+        else{
+            //No available item options
+            std::cout << "This item has no additional options" << std::endl;
+            itemChosen = true;
+        }
+    }
+    
 
     /**
      * Print the opening menu and tutorial

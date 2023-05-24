@@ -77,7 +77,8 @@
 //option to request help
 #define HELPOPTION "help"
 
-
+//cancel item variation commands
+#define CANCELITEMVAR "n"
 
 /**
  * data structure to represent a stock item within the system
