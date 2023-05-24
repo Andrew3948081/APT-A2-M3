@@ -149,16 +149,20 @@ void DoublyLinkedList::displayItems(){
         std::cout.width(ITEM_COL_SPACE - data->name.length());
         std::cout << std::right << "|" << data->on_hand << "         |$ " << data->price.dollars << ".";
         if (data->price.cents == 0) {
-            std::cout << "00" << std::endl;
+            std::cout << "00";
         }
         else if (data->price.cents < 10) {
-            std::cout << "0" << data->price.cents << std::endl;
+            std::cout << "0" << data->price.cents; 
         }
         else {
-            std::cout << data->price.cents << std::endl;
+            std::cout << data->price.cents; 
         }
+        //item options
+        std::cout << " | ";
+        data->itemOptions->display();
         
     }
+    std::cout << std::endl;
 }
 
 void DoublyLinkedList::resetStocks(){
@@ -170,3 +174,23 @@ void DoublyLinkedList::resetStocks(){
     std::cout << "All stock has been reset to the default level of " << DEFAULT_STOCK_LEVEL << std::endl;
 }
 
+std::string DoublyLinkedList::itemOptionsBorder(){
+    //set length to a min value of 15
+    int length = 15;
+    ModifiedNode* currNode = this->head;
+    //get the largest space required for item options
+    while(currNode != nullptr){
+        int itemOptsLen = currNode->data->itemOptions->getTotalLength();
+        if(itemOptsLen > length){
+            //add 2 to account for spaces
+            length = itemOptsLen+2;
+        }
+        currNode = currNode->next;
+    }
+    //print out the remaining lines
+    std::string output = "";
+    for (int i = 0; i < length; i++) {
+        output += '-';
+    }
+    return output;
+}

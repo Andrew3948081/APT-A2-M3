@@ -16,11 +16,12 @@ ModifiedNode::~ModifiedNode()
 
 
 
-void ModifiedNode::createNode(std::string id, std::string name, std::string desc, Price price, int on_hand) {
+void ModifiedNode::createNode(std::string id, std::string name, std::string desc, Price price, int on_hand, ItemOptionsll* itemOptions) {
     this->data = new ModifiedStock;
     this->data->id = id;
     this->data->name = name;
     this->data->description = desc;
     this->data->price = price;
     this->data->on_hand = on_hand;
+    this->data->itemOptions = itemOptions;
 }

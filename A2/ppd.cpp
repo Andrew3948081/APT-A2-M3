@@ -124,25 +124,15 @@ int main(int argc, char **argv)
                 Price price;
                 std::vector<std::string> token;
                 Helper::splitString(stockLine, token, STOCKDELIM);
+                //std::cout << token[1] << std::endl;
 
                 // Check if the line has the 5 elements, [id],[name],[desc],[price],[on_hand]
-                if (int(token.size()) == STOCK_COLS) {
+                if (int(token.size()) == STOCK_COLS || (int(token.size()) == MODIFIED_STOCK_COLS && runModified == true)) {
 
                     // // Create a stock node heap
                     Node* stockNode = new Node();
                     ModifiedNode* modifiedStockNode = new ModifiedNode();
-
-                    
-                    // if(runModified == true){
-                    //     delete stockNode;
-                       
-                    // }
-                    // else{
-                    //     delete modifiedStockNode;
-                    // }
-                   
-
-                        
+    
                     
                     // Check if the price has a '.' (full stop) char
                     std::string* stockPrice = &token[3];
@@ -181,11 +171,41 @@ int main(int argc, char **argv)
                     bool qtyValid = Helper::isNumber(token[4]);
                     if (qtyValid){
                         if(runModified == true){
+                            ItemOptionsll* itemOptsLL = new ItemOptionsll;
+                           
                             //if running the modified program do this
+
+                            //handle item options
+                            //std::cout<<token[5]<<std::endl;
+                            if (Helper::isWhitespaceOrNewline(token[5])){ 
+                                //no itemopts maybe make blank
+                               
+                            }
+                            else if (token[5].find(",") != std::string::npos) {
+                                //split string into vector and put into LL
+                                
+                                std::vector<std::string> optionsToken;
+                                Helper::splitString(token[5], optionsToken, ",");
+                                for(unsigned int i = 0; i < optionsToken.size(); i++)
+                                {
+                                   
+                                   //newItemOptions->data = &optionsToken[i];
+                                   //newItemOptions->setNode(optionsToken[i]);
+                                   itemOptsLL->insert(optionsToken[i]);
+                                }
+                            }
+                            else{
+                                //single item 
                             
-                            modifiedStockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]));
+                                itemOptsLL->insert(token[5]);
+                            }
+                           
+                            //itemOptsLL->display();
+
+                            modifiedStockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]), itemOptsLL);
                             // Append node to linkedlist
                             modifiedStockList->addNode(modifiedStockNode);
+                            
                         }
                         else{
                             stockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]));
@@ -676,8 +696,8 @@ void printItems(LinkedList* stockList) {
 void modifiedPrintItems(DoublyLinkedList* stockList) {
     std::cout << "Items Menu" << std::endl;
     std::cout << "----------" << std::endl;
-    std::cout << "ID   |Name                                    | Available | Price" << std::endl;
-    std::cout << "-------------------------------------------------------------------" << std::endl;
+    std::cout << "ID   |Name                                    | Available | Price | Item Options " << std::endl;
+    std::cout << "-------------------------------------------------------------------" << stockList->itemOptionsBorder() << std::endl;
     stockList->displayItems();
     std::cout << std::endl;
 }
@@ -820,6 +840,10 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
         name = Helper::readInput();
     }
    
+    ItemOptionsll* newItemOptions = new ItemOptionsll;
+    //handle adding item options here
+
+
 
     std::cout << "Enter the item description: ";
     description = Helper::readInput();
@@ -867,7 +891,7 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
   
 
     ModifiedNode* newItem = new ModifiedNode();
-    newItem->createNode(id, name, description, cost, DEFAULT_STOCK_LEVEL);
+    newItem->createNode(id, name, description, cost, DEFAULT_STOCK_LEVEL, newItemOptions);
 
     stockList->addNode(newItem);
     std::cout << "This item \"" << name << " - " << description;

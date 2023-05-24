@@ -69,5 +69,8 @@ public:
 
     //returns true if value is boolean
     static bool isbool(const std::string s);
+
+    //checks if string is whitespace or newline
+    static bool isWhitespaceOrNewline(const std::string s) ;
 };
 #endif

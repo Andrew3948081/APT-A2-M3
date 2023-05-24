@@ -40,18 +40,14 @@ bool Helper::isMenuNumber(const std::string& s) {
 
 void Helper::splitString(string s, vector<string>& tokens, string delimeter)
 {
+   
     tokens.clear();
-    char* _s = new char[s.length()+1];
-    strcpy(_s, s.c_str());
-
-    char * pch;
-    pch = strtok (_s, delimeter.c_str());
-    while (pch != NULL)
-    {
-        tokens.push_back(pch);
-        pch = strtok (NULL, delimeter.c_str());
+    size_t pos = 0;
+    while ((pos = s.find(delimeter)) != std::string::npos) {
+        tokens.push_back(s.substr(0, pos));
+        s.erase(0, pos + delimeter.length());
     }
-    delete[] _s;
+    tokens.push_back(s);
 }
 
 string Helper::readInput()
@@ -240,4 +236,9 @@ bool Helper::isbool(std::string s){
         return true;
     }
     return false;
+}
+
+bool Helper::isWhitespaceOrNewline(const std::string s) {
+    
+    return s == " "  || s == "\n" || s == "\t" || s == "\r" || s == "";
 }

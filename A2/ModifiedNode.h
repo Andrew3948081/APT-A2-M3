@@ -2,6 +2,7 @@
 #define MODIFIEDNODE_H
 #include <string> 
 #include "Coin.h"
+#include "ItemOptionsll.h"
 
 
 // Display coins indent
@@ -31,6 +32,9 @@
 
 // Stock elements, needs 5 for the file to be valid
 #define STOCK_COLS 5
+
+//Stock elements, for modified data
+#define MODIFIED_STOCK_COLS 6
 
 // Delimiter for stock data file
 #define STOCKDELIM "|"
@@ -110,6 +114,9 @@ public:
     
     // how many of this item do we have on hand? 
     unsigned on_hand;    
+
+    //different item options
+    ItemOptionsll* itemOptions;
 };
 
 /**
@@ -121,7 +128,7 @@ public:
     ModifiedNode();
     ~ModifiedNode();
 
-    void createNode(std::string ID, std::string name, std::string desc, Price price, int on_hand);
+    void createNode(std::string ID, std::string name, std::string desc, Price price, int on_hand, ItemOptionsll* itemOptions);
 
     // pointer to the data held for the node 
     ModifiedStock* data;

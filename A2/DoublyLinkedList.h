@@ -22,6 +22,9 @@ public:
     ModifiedNode* searchID(std::string id);
     void updateStockCount(std::string IDsearch);
 
+    //prints the correct number of dashes (-) for the menu border 
+    std::string itemOptionsBorder();
+
     //first node in the list
     ModifiedNode* head;
     
