@@ -126,20 +126,12 @@ int main(int argc, char **argv)
                 Price price;
                 std::vector<std::string> token;
                 Helper::splitString(stockLine, token, STOCKDELIM);
-                //std::cout << token[1] << std::endl;
 
-                // Check if the line has the 5 elements, [id],[name],[desc],[price],[on_hand]
+                // Check if the line has the 5 elements, [id],[name],[desc],[price],[on_hand] or 6 depending on what mode the program is in
                 if (int(token.size()) == STOCK_COLS || (int(token.size()) == MODIFIED_STOCK_COLS && runModified == true)) {
 
-                    // // Create a stock node heap
-                    // Node* stockNode = new Node();
-                    // ModifiedNode* modifiedStockNode = new ModifiedNode();
-                    // if(runModified == true){
-                    //     delete stockNode;
-                    // }
-                    // else{
-                    //     delete modifiedStockNode;
-                    // }
+                    // Create a stock node heap
+                  
                     Node* stockNode = nullptr;
                     ModifiedNode* modifiedStockNode = nullptr;
 
@@ -148,17 +140,8 @@ int main(int argc, char **argv)
                     } else {
                         stockNode = new Node();
                     }
-
-
-
-                    // if (runModified) 
-                    //     delete stockNode;
-                    // } else {
-                    //     delete modifiedStockNode;
-                    // }
                     
     
-                    
                     // Check if the price has a '.' (full stop) char
                     std::string* stockPrice = &token[3];
                     bool checkPrice = Helper::priceValidator(stockPrice);

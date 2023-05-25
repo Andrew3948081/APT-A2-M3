@@ -40,14 +40,18 @@ bool Helper::isMenuNumber(const std::string& s) {
 
 void Helper::splitString(string s, vector<string>& tokens, string delimeter)
 {
-   
     tokens.clear();
-    size_t pos = 0;
-    while ((pos = s.find(delimeter)) != std::string::npos) {
-        tokens.push_back(s.substr(0, pos));
-        s.erase(0, pos + delimeter.length());
+    size_t start = 0;
+    size_t end = s.find(delimeter);
+    while (end != string::npos) {
+        if (end != start) {
+            tokens.push_back(s.substr(start, end - start));
+        }
+        start = end + delimeter.length();
+        end = s.find(delimeter, start);
     }
-    tokens.push_back(s);
+    tokens.push_back(s.substr(start));
+
 }
 
 string Helper::readInput()
