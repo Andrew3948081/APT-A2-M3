@@ -650,7 +650,7 @@ ItemPurchasedInfo modifiedPurchasingItem(int amountLeftToPay) {
      * change that is needed to be given has not been set
     */
     else if ((!finalChangeEdited) && (!itemPurchased)) {
-        std::cout << "You still need to give us " << priceToString(amountLeftPrice) << ": ";
+        std::cout << "You still need to give us " << "\033[32m" << priceToString(amountLeftPrice) << "\033[0m"  << ": ";
         /**
          * Check if the user entered ctrl-d or "", as this would indicate they want to cancel
         */
