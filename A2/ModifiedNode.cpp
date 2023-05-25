@@ -11,7 +11,9 @@ ModifiedNode::ModifiedNode(){
 
 ModifiedNode::~ModifiedNode()
 {
+    delete data->itemOptions;
     delete data;
+    
 }
 
 

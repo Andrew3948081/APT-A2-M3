@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     bool versionError = false;
 
     //initialise linked list and coin vector
-    LinkedList* stockList = new LinkedList;
+    LinkedList* stockList = nullptr;
     std::vector<Coin> wallet;
     std::vector<std::string> fileName;
 
@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     
 
     bool runModified = false;
-    DoublyLinkedList* modifiedStockList = new DoublyLinkedList;
+    DoublyLinkedList* modifiedStockList = nullptr;
 
    
     
@@ -107,9 +107,11 @@ int main(int argc, char **argv)
             //if arg is boolean
           
             if (std::string(argv[3]) == "true"){
+                modifiedStockList = new DoublyLinkedList;
                 runModified = true;
             }
             else{
+                stockList = new LinkedList;
                 runModified = false;
             }
         }
@@ -130,8 +132,31 @@ int main(int argc, char **argv)
                 if (int(token.size()) == STOCK_COLS || (int(token.size()) == MODIFIED_STOCK_COLS && runModified == true)) {
 
                     // // Create a stock node heap
-                    Node* stockNode = new Node();
-                    ModifiedNode* modifiedStockNode = new ModifiedNode();
+                    // Node* stockNode = new Node();
+                    // ModifiedNode* modifiedStockNode = new ModifiedNode();
+                    // if(runModified == true){
+                    //     delete stockNode;
+                    // }
+                    // else{
+                    //     delete modifiedStockNode;
+                    // }
+                    Node* stockNode = nullptr;
+                    ModifiedNode* modifiedStockNode = nullptr;
+
+                    if (runModified) {
+                        modifiedStockNode = new ModifiedNode();
+                    } else {
+                        stockNode = new Node();
+                    }
+
+
+
+                    // if (runModified) 
+                    //     delete stockNode;
+                    // } else {
+                    //     delete modifiedStockNode;
+                    // }
+                    
     
                     
                     // Check if the price has a '.' (full stop) char
@@ -176,9 +201,9 @@ int main(int argc, char **argv)
                             //if running the modified program do this
 
                             //handle item options
-                            //std::cout<<token[5]<<std::endl;
+                            
                             if (Helper::isWhitespaceOrNewline(token[5])){ 
-                                //no itemopts maybe make blank
+                                //no itemopts 
                                
                             }
                             else if (token[5].find(",") != std::string::npos) {
@@ -200,7 +225,7 @@ int main(int argc, char **argv)
                                 itemOptsLL->insert(token[5]);
                             }
                            
-                            //itemOptsLL->display();
+                          
 
                             modifiedStockNode->createNode(token[0],token[1],token[2],price,std::stoi(token[4]), itemOptsLL);
                             // Append node to linkedlist
@@ -394,8 +419,15 @@ int main(int argc, char **argv)
     if (versionError) {
         std::cout << "invalid version argument" << std::endl;
     }
+
+    if(runModified){
+        delete modifiedStockList;
+    }
+    else{
+        delete stockList;
+    }
     
-    delete stockList;
+    
 
     return EXIT_SUCCESS;
 }
@@ -853,6 +885,7 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
         if(Helper::emptyString(optionsInput)){
             //if string is empty return to MM and write correct error message
             std::cout << "Cancelling \"add item\" at user's request." << std::endl;
+            delete newItemOptions;
             return false;
         }
         else if(optionsInput.length() == 0 || optionsInput.length() > NAMELEN){
@@ -908,6 +941,7 @@ bool modifiedAddItem(DoublyLinkedList* stockList) {
         if(Helper::emptyString(priceString)){
             //if string is empty return to MM and write correct error message
             std::cout << "Cancelling \"add item\" at the user's request." << std::endl;
+            delete newItemOptions;
             return false;
         }
         if(priceString == HELPOPTION){
