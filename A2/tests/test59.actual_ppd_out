@@ -1,0 +1,23 @@
+Main Menu:
+    1.Display Items
+    2.Purchase Items
+    3.Save and Exit
+Administrator-Only Menu:
+    4.Add Item
+    5.Remove Item
+    6.Display Coins
+    7.Reset Stock
+    8.Reset Coins
+    9.Abort Program
+
+Select your option (1-9): Items Menu
+----------
+ID   |Name                                    | Available | Price  | Item Options 
+--------------------------------------------------------------------------------------------------
+I0002|Apple Pie                               |20         |$ 3.00 | Pear Pie, Plum Pie, Peach Pie
+I0003|Lemon Cheesecake                        |10         |$ 4.00 | Dairy Free cheese cake
+I0004|Lemon Meringue Pie                      |20         |$ 3.00 | 
+I0005|Lemon Tart                              |12         |$ 3.75 | Apple Tart
+I0001|Meat Pie                                |30         |$ 3.50 | Steak & Cheese, Spanish & Feta
+
+
