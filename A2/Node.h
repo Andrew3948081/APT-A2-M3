@@ -80,6 +80,9 @@
 //cancel item variation commands
 #define CANCELITEMVAR "n"
 
+//seperates item options
+#define ITEMOPTIONDELIM ","
+
 /**
  * data structure to represent a stock item within the system
  **/

@@ -189,11 +189,11 @@ int main(int argc, char **argv)
                                 //no itemopts 
                                
                             }
-                            else if (token[5].find(",") != std::string::npos) {
+                            else if (token[5].find(ITEMOPTIONDELIM) != std::string::npos) {
                                 //split string into vector and put into LL
                                 
                                 std::vector<std::string> optionsToken;
-                                Helper::splitString(token[5], optionsToken, ",");
+                                Helper::splitString(token[5], optionsToken, ITEMOPTIONDELIM);
                                 for(unsigned int i = 0; i < optionsToken.size(); i++)
                                 {
                                    
@@ -712,7 +712,7 @@ void printItems(LinkedList* stockList) {
 void modifiedPrintItems(DoublyLinkedList* stockList) {
     std::cout << "Items Menu" << std::endl;
     std::cout << "----------" << std::endl;
-    std::cout << "ID   |Name                                    | Available | Price  | Item Options " << std::endl;
+    std::cout << "ID   |Name                                    | Available | Price | Item Options " << std::endl;
     std::cout << "--------------------------------------------------------------------" << stockList->itemOptionsBorder() << std::endl;
     stockList->displayItems();
     std::cout << std::endl;

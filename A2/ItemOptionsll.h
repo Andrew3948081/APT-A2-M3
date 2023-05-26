@@ -31,7 +31,7 @@ public:
     void insert(std::string val);
     //display the items for displaying 
     void display();
-    //get the total length of the string
+    //get the total length of the strings
     int getTotalLength();
     //check if item exists in list
     bool itemExist(const std::string s);

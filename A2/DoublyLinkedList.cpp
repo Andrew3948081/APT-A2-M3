@@ -179,17 +179,19 @@ std::string DoublyLinkedList::itemOptionsBorder(){
     int length = 15;
     ModifiedNode* currNode = this->head;
     //get the largest space required for item options
+    int space = 0;
     while(currNode != nullptr){
         int itemOptsLen = currNode->data->itemOptions->getTotalLength();
         if(itemOptsLen > length){
-            //add 2 to account for spaces
-            length = itemOptsLen+2;
+            space+=5;
+            length = itemOptsLen;
         }
         currNode = currNode->next;
     }
+    length += space;
     //print out the remaining lines
     std::string output = "";
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i <= length; i++) {
         output += '-';
     }
     return output;
