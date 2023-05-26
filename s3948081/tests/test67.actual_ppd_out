@@ -1,0 +1,40 @@
+Main Menu:
+    1.Display Items
+    2.Purchase Items
+    3.Save and Exit
+Administrator-Only Menu:
+    4.Add Item
+    5.Remove Item
+    6.Display Coins
+    7.Reset Stock
+    8.Reset Coins
+    9.Abort Program
+
+Select your option (1-9): Purchase Item
+-------------
+Please enter the id of the item you wish to purchase: This item has multiple options
+ - Steak & Cheese
+ - Spanish & Feta
+Enter the name of the item option you want to purchase, press enter to use default:That option does not exist, please try again
+This item has multiple options
+ - Steak & Cheese
+ - Spanish & Feta
+Enter the name of the item option you want to purchase, press enter to use default:That option does not exist, please try again
+This item has multiple options
+ - Steak & Cheese
+ - Spanish & Feta
+Enter the name of the item option you want to purchase, press enter to use default:That option does not exist, please try again
+This item has multiple options
+ - Steak & Cheese
+ - Spanish & Feta
+Enter the name of the item option you want to purchase, press enter to use default:That option does not exist, please try again
+This item has multiple options
+ - Steak & Cheese
+ - Spanish & Feta
+Enter the name of the item option you want to purchase, press enter to use default:Default item selected
+You have selected "Meat Pie - Yummy Beef in Gravy surrounded by pastry". This will cost you $3.50.
+Please hand over the money - type in the value of each note/coin in cents.
+Press enter or ctrl-d on a new line to cancel this purchase: 
+You still need to give us [32m$3.50[0m: Change of mind - here is your change:
+
+Please come again soon.
